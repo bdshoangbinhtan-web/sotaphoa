@@ -1,0 +1,10 @@
+const fs = require('fs');
+const shell = fs.readFileSync('src/shell.html', 'utf8');
+const css = fs.readFileSync('src/style.css', 'utf8');
+const app = fs.readFileSync('src/app.js', 'utf8');
+const qr = fs.readFileSync('node_modules/qrcode-generator/qrcode.js', 'utf8');
+const out = shell.replace('/*__CSS__*/', () => css).replace('/*__QR__*/', () => qr).replace('/*__APP__*/', () => app);
+fs.mkdirSync('dist', { recursive: true });
+fs.writeFileSync('dist/index.html', out);
+for (const f of ['manifest.json', 'sw.js']) fs.copyFileSync('src/' + f, 'dist/' + f);
+console.log('built', out.length, 'bytes');
